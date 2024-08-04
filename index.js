@@ -10,7 +10,7 @@ app.set("view Engine","ejs");
 async function main()
 {
     
-    await mongoose.connect('mongodb://127.0.0.1:27017//whatsapp'); 
+    await mongoose.connect('mongodb://127.0.0.1:27017/whatsapp'); 
 
 }
 
@@ -28,6 +28,14 @@ then(()=>{
 // chat1.save().then((res)=>{
 //     console.log(res);
 // });
+
+
+// index route
+app.get("/chats", async (req, res)=>{
+    let chats = await Chat.find();
+    console.log(chats);
+    res.send("working");
+});
 
 app.listen(8080,()=>{
     console.log("server is listening on port number 8080"); 
