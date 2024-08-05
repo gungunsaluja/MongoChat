@@ -5,7 +5,9 @@ const path = require("path");
 const Chat = require("./models/chat.js");
 
 app.set("views", path.join(__dirname, "views"));
-app.set("view Engine","ejs");
+app.set("view engine","ejs");
+app.use(express.static(path.join(__dirname,"public")));
+app.use(express.urlencoded({extended:true}));
 
 async function main()
 {
@@ -34,11 +36,33 @@ then(()=>{
 app.get("/chats", async (req, res)=>{
     let chats = await Chat.find();
     console.log(chats);
-    res.send("working");
+    res.render("index.ejs",{chats});
 });
+// new routes
+app.get("/chats/new",(req,res)=>{
+    res.render("new.ejs")    
+}),
+// create Route
+app.post("/chats",(req,res)=>{
+    let {from, to ,msg} = req.body;
+    let newChat = new Chat({
+        from:from,
+        to:to,
+        msg:msg,
+        created_at:new Date()
+    });
+    newChat.save().then((res)=>{console.log("chat was saved")}).catch((err)=>{
+        console.log(err);
+    })
+    // console.log(newChat);
+    // res.send("working");
+
+    res.redirect("/chats")
+})
 
 app.listen(8080,()=>{
     console.log("server is listening on port number 8080"); 
+
 })
 app.get("/",(req,res)=>{
     res.send("root is working")
